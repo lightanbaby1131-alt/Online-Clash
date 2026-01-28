@@ -28,14 +28,19 @@ jobs:
           echo "Cleaning old .mrs files..."
           rm -f Rule/mrs/*.mrs || true
 
-      - name: Download latest Mihomo core
+      - name: Download latest Mihomo v3 binary
         run: |
           LATEST_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
             | grep "browser_download_url" \
-            | grep "linux-amd64" \
+            | grep "linux-amd64-v3" \
+            | grep ".gz" \
             | cut -d '"' -f 4)
-          echo "Downloading: $LATEST_URL"
-          wget -O .github/temp/mihomo "$LATEST_URL"
+
+          echo "Downloading Mihomo from: $LATEST_URL"
+          wget -O .github/temp/mihomo.gz "$LATEST_URL"
+
+          echo "Extracting Mihomo..."
+          gunzip .github/temp/mihomo.gz
           chmod +x .github/temp/mihomo
 
       - name: Convert all .list to .mrs
